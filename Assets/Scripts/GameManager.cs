@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameFlowHandler = new FlowAction("gameFlowHandler");
+        gameFlowHandler = new FlowAction();
 
         PlayerTurnAction player1TurnAction = new PlayerTurnAction(tempPlayer1);
         gameFlowHandler.RequestAction(player1TurnAction);

@@ -24,7 +24,7 @@ public class PlayCardAction : FlowAction
     {
         Debug.Log($"Play Card: {card}");
 
-        UIManager.Instance.DisplayCard(card);
+        UIManager.Instance.DisplayCard(card, player);
 
         AssignTargets();
     }
@@ -181,18 +181,19 @@ public class PlayCardAction : FlowAction
                 ActivateCardEffectsWithTrigger(GameEventType.CardPlayed);
             }
 
-            GameManager.instance.StartCoroutine(TriggerOnCompleteAfterDelay(4)); //FOR TESTING
-            //onComplete?.Invoke(this, null, null);
+            //GameManager.instance.StartCoroutine(TriggerOnCompleteAfterDelay(4)); //FOR TESTING
+            UIManager.Instance.RemoveCardView(card);
+            onComplete?.Invoke(this, null, null);
         }
     }
 
-    IEnumerator TriggerOnCompleteAfterDelay(float delay)
+    /*IEnumerator TriggerOnCompleteAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
 
         UIManager.Instance.RemoveCardView(card);
         onComplete?.Invoke(this, null, null);
-    }
+    }*/
 
     public void ConnectRequiredGameEvents(out bool triggerWhenPlayed)
     {

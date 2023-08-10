@@ -51,7 +51,7 @@ public class FlowAction : AbstractAction
     protected bool isWaitingForAction = false;
     public bool quitWhenQueueIsEmpty = true;
 
-    public FlowAction(string _name = "", bool _quitWhenQueueIsEmpty = true) : base(true, 0, _name) 
+    public FlowAction(string _name, bool _quitWhenQueueIsEmpty = true) : base(true, 0, _name) 
     {
         quitWhenQueueIsEmpty = _quitWhenQueueIsEmpty;
     }
