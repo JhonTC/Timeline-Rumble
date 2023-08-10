@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50c0db187efb5cf4995e7a1991b11599, type: 3}
+  m_Name: The Human Gun
+  m_EditorClassIdentifier: 
+  cost: 2
+  rarity: {fileID: 11400000, guid: b31eaf2fcecfa894b8db68658aefa677, type: 2}
+  effects:
+  - trigger:
+      triggerType: 1
+      triggerTargetType: 2
+      targetQuantityType: 0
+    action:
+      actionTargetConfig:
+        enabled: 1
+        value:
+          actionTargetType: 4
+          targetQuantityType: 2
+      scriptable: {fileID: 11400000, guid: ba240a8c285fc144095b71d439ca8347, type: 2}
+    description: Target a friendly creature. When target creature dies, all enemy
+      creatures take 5 damage.
+  description: 'Target a friendly creature. When target creature dies, all enemy
+    creatures take 5 damage.
+
+'
+  coverImage: {fileID: -856410727, guid: 218c6d21cb122ca428f7e3a990508536, type: 3}
+  typeImage: {fileID: 21300000, guid: f050261a73f9447e9874b79c3b654818, type: 3}
