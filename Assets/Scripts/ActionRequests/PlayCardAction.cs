@@ -42,32 +42,32 @@ public class PlayCardAction : FlowAction
         {
             Effect effect = card.effects[i];
 
-            CharacterType targetType = effect.trigger.triggerTargetType;
+            CharacterTypeDetails targetTypeDetails = effect.trigger.triggerTargetType;
             TargetQuantityType quantityType = effect.trigger.targetQuantityType;
-            LocateEffectTargets(effect, targetType, quantityType, true);
+            LocateEffectTargets(effect, targetTypeDetails, quantityType, true);
 
             if (effect.action.useCustomActionTarget)
             {
-                targetType = effect.action.actionTargetConfig.value.actionTargetType;
+                targetTypeDetails = effect.action.actionTargetConfig.value.actionTargetType;
                 quantityType = effect.action.actionTargetConfig.value.targetQuantityType;
-                LocateEffectTargets(effect, targetType, quantityType, false);
+                LocateEffectTargets(effect, targetTypeDetails, quantityType, false);
             }
         }
     }
 
-    private void LocateEffectTargets(Effect _effect, CharacterType _targetType, TargetQuantityType _quantityType, bool _isTrigger)
+    private void LocateEffectTargets(Effect _effect, CharacterTypeDetails _targetTypeDetails, TargetQuantityType _quantityType, bool _isTrigger)
     {
-        if (_targetType == CharacterType.Self)
+        if (_targetTypeDetails == CharacterType.Self)
         {
             SetTargetGroupValues(_effect, new Character[] { player.character }, _isTrigger);
         }
         else if (_quantityType == TargetQuantityType.All)
         {
-            SetTargetGroupValues(_effect, Player.GetAllCharactersOfType(_targetType), _isTrigger);
+            SetTargetGroupValues(_effect, Player.GetAllCharactersOfType(_targetTypeDetails.characterType), _isTrigger);
         } else
         {
             //Trigger Target Selection Request
-            CreateSelectionRequest(_effect, _targetType, _quantityType, _isTrigger);
+            CreateSelectionRequest(_effect, _targetTypeDetails.characterType, _quantityType, _isTrigger);
         }
     }
 

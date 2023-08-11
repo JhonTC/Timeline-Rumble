@@ -79,28 +79,35 @@ public class CardEditor : Editor
                 setDirty = true;
             }
 
-            if (effects[i].trigger.triggerTargetType == CharacterType.Null)
+            /*if (effects[i].trigger.triggerTargetType == CharacterType.Null)
             {
                 effects[i].trigger.triggerTargetType = CharacterType.Self;
                 setDirty = true;
-            }
+            }*/
 
-            if (effects[i].trigger.triggerTargetType == CharacterType.Self && 
-                effects[i].trigger.targetQuantityType != TargetQuantityType.One)
+            if (effects[i].trigger.triggerTargetType != null)
             {
-                effects[i].trigger.targetQuantityType = TargetQuantityType.One;
-                setDirty = true;
+                if (effects[i].trigger.triggerTargetType == CharacterType.Self &&
+                    effects[i].trigger.targetQuantityType != TargetQuantityType.One)
+                {
+                    effects[i].trigger.targetQuantityType = TargetQuantityType.One;
+                    setDirty = true;
+                }
             }
 
-            if (effects[i].action.useCustomActionTarget && 
-                effects[i].action.actionTargetConfig.value.actionTargetType == CharacterType.Self && 
-                effects[i].action.actionTargetConfig.value.targetQuantityType != TargetQuantityType.One)
+            if (effects[i].action.actionTargetConfig.value.actionTargetType != null)
             {
-                effects[i].action.actionTargetConfig.value.targetQuantityType = TargetQuantityType.One;
-                setDirty = true;
+                if (effects[i].action.useCustomActionTarget &&
+                    effects[i].action.actionTargetConfig.value.actionTargetType == CharacterType.Self &&
+                    effects[i].action.actionTargetConfig.value.targetQuantityType != TargetQuantityType.One)
+                {
+                    effects[i].action.actionTargetConfig.value.targetQuantityType = TargetQuantityType.One;
+                    setDirty = true;
+                }
             }
+            
 
-            if (!effects[i].action.useCustomActionTarget && 
+            /*if (!effects[i].action.useCustomActionTarget && 
                 effects[i].action.actionTargetConfig.value.actionTargetType != CharacterType.Null)
             {
                 effects[i].action.actionTargetConfig.value.actionTargetType = CharacterType.Null;
@@ -113,7 +120,7 @@ public class CardEditor : Editor
                 //effects[i].action.useCustomActionTarget = false;
                 effects[i].action.actionTargetConfig.value.actionTargetType = CharacterType.Self;
                 setDirty = true;
-            }
+            }*/
 
             /*if (effects[i].action.useCustomActionTarget &&
                 effects[i].action.actionTargetConfig.value.actionTargetType == effects[i].trigger.triggerTargetType)
@@ -220,15 +227,17 @@ public class CardEditor : Editor
         return description;
     }
 
-    private string GetTargetTypeString(CharacterType _effectTargetType, TargetQuantityType _targetQuantityType, bool useCustomActionTarget = false)
+    private string GetTargetTypeString(CharacterTypeDetails _effectTargetType, TargetQuantityType _targetQuantityType, bool useCustomActionTarget = false)
     {
+        if (_effectTargetType == null) return "No Target Type Selected";
+
         string prefix = string.Empty;
         string targetTypeString = "target";
         string suffix = "creature";
 
         if (useCustomActionTarget)
         {
-            switch (_effectTargetType)
+            switch (_effectTargetType.characterType)
             {
                 case CharacterType.Any:
                     prefix = "a";
@@ -246,6 +255,11 @@ public class CardEditor : Editor
                     targetTypeString = "allied";
                     break;
             }
+        }
+
+        if (targetTypeString != "target")
+        {
+            targetTypeString = $"<color=#{ColorUtility.ToHtmlStringRGB(_effectTargetType.colour)}>{targetTypeString}</color>";
         }
 
         if (_effectTargetType == CharacterType.Self)
@@ -294,12 +308,14 @@ public class CardEditor : Editor
     {
         _effectActionPrefix = "target creature";
 
+        if (_trigger.triggerTargetType == null) return "No Target Type Selected";
+
         string quantitySuffix = string.Empty;
         string strJoiner = string.Empty;
         string strTargetType = string.Empty;
         string strTargetQuantity = string.Empty;
 
-        switch (_trigger.triggerTargetType)
+        switch (_trigger.triggerTargetType.characterType)
         {
             case CharacterType.Any:
                 strJoiner = "any";
@@ -348,7 +364,7 @@ public class CardEditor : Editor
 
         if (strTargetType != string.Empty)
         {
-            strTargetType += space;
+            strTargetType = $"<color=#{ColorUtility.ToHtmlStringRGB(_trigger.triggerTargetType.colour)}>{strTargetType}</color>{space}";
         }
 
         string targetSentence = $"Target {strJoiner}{strTargetQuantity}{strTargetType}creature{quantitySuffix}{_suffix}";
@@ -356,8 +372,10 @@ public class CardEditor : Editor
         return targetSentence;
     }
 
-    private string GetTriggerSentence(EffectTrigger _trigger, CharacterType _effectTargetType)
+    private string GetTriggerSentence(EffectTrigger _trigger, CharacterTypeDetails _effectTargetType)
     {
+        if (_trigger.triggerTargetType == null) return "No Target Type Selected";
+
         switch (_trigger.triggerType)
         {
             case GameEventType.TurnStart:

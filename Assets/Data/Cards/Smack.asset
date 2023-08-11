@@ -17,17 +17,19 @@ MonoBehaviour:
   effects:
   - trigger:
       triggerType: 0
-      triggerTargetType: 4
+      triggerTargetType: {fileID: 11400000, guid: 343aeacb70cfcd746b84b45b4d4993c6, type: 2}
       targetQuantityType: 0
     action:
       actionTargetConfig:
         enabled: 0
         value:
-          actionTargetType: 0
+          actionTargetType: {fileID: 0}
           targetQuantityType: 0
       scriptable: {fileID: 11400000, guid: ba240a8c285fc144095b71d439ca8347, type: 2}
-    description: Target an enemy creature. When played, target creature takes 5 damage.
-  description: 'Target an enemy creature. When played, target creature takes 5 damage.
+    description: Target an <color=#CC4900>enemy</color> creature. When played, target
+      creature takes 5 damage.
+  description: 'Target an <color=#CC4900>enemy</color> creature. When played, target
+    creature takes 5 damage.
 
 '
   coverImage: {fileID: -856410727, guid: 218c6d21cb122ca428f7e3a990508536, type: 3}

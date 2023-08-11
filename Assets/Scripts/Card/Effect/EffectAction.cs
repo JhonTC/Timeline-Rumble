@@ -21,6 +21,6 @@ public class EffectAction
 [System.Serializable]
 public class EffectActionConfig
 {
-    public CharacterType actionTargetType = CharacterType.Null;
+    public CharacterTypeDetails actionTargetType;
     public TargetQuantityType targetQuantityType = TargetQuantityType.One;
 }

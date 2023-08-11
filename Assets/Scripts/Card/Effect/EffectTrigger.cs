@@ -5,7 +5,7 @@ using UnityEngine;
 public class EffectTrigger
 {
     public GameEventType triggerType;
-    public CharacterType triggerTargetType;
+    public CharacterTypeDetails triggerTargetType;
     public TargetQuantityType targetQuantityType;
 
     #region operators

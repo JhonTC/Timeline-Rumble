@@ -17,17 +17,19 @@ MonoBehaviour:
   effects:
   - trigger:
       triggerType: 0
-      triggerTargetType: 1
+      triggerTargetType: {fileID: 11400000, guid: 9121c63c60636d445856a5f3b9bfa9af, type: 2}
       targetQuantityType: 0
     action:
       actionTargetConfig:
         enabled: 0
         value:
-          actionTargetType: 0
+          actionTargetType: {fileID: 0}
           targetQuantityType: 0
       scriptable: {fileID: 11400000, guid: 325c8a1295c948e4280b517c27ca47f8, type: 2}
-    description: When played, your creature gains 10 Armour.
-  description: 'When played, your creature gains 10 Armour.
+    description: Target a <color=#6DC800>friendly</color> creature. When played,
+      target creature gains 10 Armour.
+  description: 'Target a <color=#6DC800>friendly</color> creature. When played, target
+    creature gains 10 Armour.
 
 '
   coverImage: {fileID: -856410727, guid: 218c6d21cb122ca428f7e3a990508536, type: 3}

@@ -1,3 +1,5 @@
+using Carp.Collections.Generic;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +20,7 @@ public class UIManager : MonoBehaviour
     public void DisplayCard(Card _card, Player _player)
     {
         Vector3 position = Camera.main.WorldToScreenPoint(_player.character.gameObject.transform.position);
-        position += Vector3.up * 100f;
+        position += Vector3.up * 75f;
 
         CardView cardview = Instantiate(cardViewPrefab, position, Quaternion.identity, cardDisplayParent);
         cardview.transform.localScale = Vector3.zero;
@@ -43,3 +45,6 @@ public class UIManager : MonoBehaviour
         }
     } 
 }
+
+[Serializable]
+public class CharacterTypeColourPair : Pair<CharacterType, Color> {}
