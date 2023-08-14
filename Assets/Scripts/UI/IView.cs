@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IView
 {
-    public void RenderView(object _value);
+    public void RenderView(object _value, object _owner);
 }

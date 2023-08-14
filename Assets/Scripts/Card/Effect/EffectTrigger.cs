@@ -5,8 +5,8 @@ using UnityEngine;
 public class EffectTrigger
 {
     public GameEventType triggerType;
-    public CharacterTypeDetails triggerTargetType;
     public TargetQuantityType targetQuantityType;
+    public CharacterTypeDetails triggerTargetType;
 
     #region operators
     public static bool operator ==(EffectTrigger _trigger, GameEventType _triggerType)

@@ -1,3 +1,4 @@
+using Carp.Process;
 using System;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public enum GameEventType
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public FlowAction gameFlowHandler;
+    public GroupProcess gameFlowHandler;
 
     public Action<GameEventType> OnRoundStart;
     public Action<GameEventType> OnTurnStart;
@@ -28,13 +29,16 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameFlowHandler = new FlowAction();
+        gameFlowHandler = new GroupProcess();
 
-        PlayerTurnAction player1TurnAction = new PlayerTurnAction(tempPlayer1);
-        gameFlowHandler.RequestAction(player1TurnAction);
+        Team[] teams = new Team[]
+        {
+            new Team(tempPlayer1),
+            new Team(tempPlayer2)
+        };
 
-        FlowAction player2TurnAction = new PlayerTurnAction(tempPlayer2);
-        gameFlowHandler.RequestAction(player2TurnAction);
+        CombatLocationProcess locationProcess = new CombatLocationProcess(teams);
+        gameFlowHandler.RequestProcess(locationProcess);
     }
 
     // Update is called once per frame

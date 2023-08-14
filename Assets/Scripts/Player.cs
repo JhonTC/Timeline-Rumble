@@ -33,7 +33,6 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         list.Add(currentIdValue, this);
-        teamId = currentIdValue;
         currentIdValue++;
 
         if (isLocal)
@@ -62,14 +61,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void OnLeaveLocation(Location location)
+    public void OnLeaveLocation(LocationProcess location)
     {
         
 
         //destroy character
     }
 
-    public PlayCardAction PlayFirstCardInHand()
+    public PlayCardProcess PlayFirstCardInHand()
     {
         if (hand.cards.Count > 0)
         {

@@ -17,9 +17,14 @@ public class Hand
         return cards.Remove(_card);
     }
 
-    public PlayCardAction PlayCard(Card _card, Player _player)
+    public PlayCardProcess PlayCard(CardView _cardView, Player _player)
     {
-        return new PlayCardAction(_card, _player);
+        return new PlayCardProcess(_cardView, _player);
+    }
+
+    public PlayCardProcess PlayCard(Card _card, Player _player)
+    {
+        return new PlayCardProcess(_card, _player);
     }
 
     public void DeactivateAllActiveCardHandlers()

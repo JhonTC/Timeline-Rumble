@@ -1,15 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
+using Carp.Process;
+using System;
+using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
-public class PlayerTurnAction : FlowAction
+public class PlayerTurnProcess : GroupProcess
 {
     private Player player;
 
-    public PlayerTurnAction(Player _player) : base(true)
+    private Action<CardView> onCardViewSelected;
+
+    public PlayerTurnProcess(Player _player) : base(false)
     {
         player = _player;
+
+        onCardViewSelected += OnCardViewSelected;
     }
 
     public void SetupPlayerTypes()
@@ -40,14 +44,28 @@ public class PlayerTurnAction : FlowAction
         }
     }
 
-    public override void InvokeRequest()
+    public override void InvokeProcess()
     {
+        Debug.Log($"Start player turn: {player}");
+
         SetupPlayerTypes();
 
-        PlayCardAction playCardAction = player.PlayFirstCardInHand();
+        UIManager.Instance.DisplayPlayerHand(player, onCardViewSelected);
+
+        onComplete += OnComplete;
+    }
+
+    public void OnCardViewSelected(CardView cardView)
+    {
+        PlayCardProcess playCardAction = player.hand.PlayCard(cardView, player);
         if (playCardAction != null)
         {
-            RequestAction(playCardAction);
+            RequestProcess(playCardAction);
         }
+    }
+
+    public void OnComplete(AbstractProcess sender, object o1, object o2)
+    {
+        UIManager.Instance.ClearHandCardViews();
     }
 }

@@ -17,14 +17,14 @@ MonoBehaviour:
   effects:
   - trigger:
       triggerType: 1
-      triggerTargetType: {fileID: 11400000, guid: 9121c63c60636d445856a5f3b9bfa9af, type: 2}
       targetQuantityType: 0
+      triggerTargetType: {fileID: 11400000, guid: 9121c63c60636d445856a5f3b9bfa9af, type: 2}
     action:
       actionTargetConfig:
         enabled: 1
         value:
-          actionTargetType: {fileID: 11400000, guid: 343aeacb70cfcd746b84b45b4d4993c6, type: 2}
           targetQuantityType: 2
+          actionTargetType: {fileID: 11400000, guid: 343aeacb70cfcd746b84b45b4d4993c6, type: 2}
       scriptable: {fileID: 11400000, guid: ba240a8c285fc144095b71d439ca8347, type: 2}
     description: Target a <color=#6DC800>friendly</color> creature. When target creature
       dies, all <color=#CC4900>enemy</color> creatures take 5 damage.

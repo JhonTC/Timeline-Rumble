@@ -1,30 +1,42 @@
+using Carp.Process;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Transactions;
-using Unity.VisualScripting;
+using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.TextCore.Text;
 
-public class PlayCardAction : FlowAction
+public class PlayCardProcess : GroupProcess
 {
     public Card card;
+    public CardView cardView;
     public Player player;
     private Dictionary<Effect, EffectTargetGroup> effectTargetGroups = new Dictionary<Effect, EffectTargetGroup>();
     List<GameEventTriggerConnection> connectedGameEvents = new List<GameEventTriggerConnection>();
 
-    public PlayCardAction(Card _card, Player _player) : base(false)
+    public PlayCardProcess(CardView _cardView, Player _player) : base(false)
+    {
+        card = _cardView.card;
+        player = _player;
+        cardView = _cardView;
+    }
+
+    public PlayCardProcess(Card _card, Player _player) : base(false)
     {
         card = _card;
         player = _player;
     }
 
-    public override void InvokeRequest()
+    public override void InvokeProcess()
     {
         Debug.Log($"Play Card: {card}");
 
-        UIManager.Instance.DisplayCard(card, player);
+        if (cardView != null)
+        {
+            UIManager.Instance.DisplayCard(cardView, player);
+        } 
+        else
+        {
+            UIManager.Instance.DisplayCard(card, player);
+        }
 
         AssignTargets();
     }
@@ -64,7 +76,8 @@ public class PlayCardAction : FlowAction
         else if (_quantityType == TargetQuantityType.All)
         {
             SetTargetGroupValues(_effect, Player.GetAllCharactersOfType(_targetTypeDetails.characterType), _isTrigger);
-        } else
+        } 
+        else
         {
             //Trigger Target Selection Request
             CreateSelectionRequest(_effect, _targetTypeDetails.characterType, _quantityType, _isTrigger);
@@ -76,14 +89,14 @@ public class PlayCardAction : FlowAction
         int numberOfTargets = effect.GetTargetQuantityAsInteger(isTrigger);
         //Debug.Log($"{(isTrigger ? "Trigger" : "Action")}Targets: {numberOfTargets}");
 
-        CharacterSelectionAction<SelectionRequestPair> selectionRequest = new CharacterSelectionAction<SelectionRequestPair>(
+        CharacterSelectionProcess<SelectionRequestPair> selectionRequest = new CharacterSelectionProcess<SelectionRequestPair>(
             _targetType,
             new SelectionRequestPair(effect, isTrigger),
             numberOfTargets,
             GetSelectorDescription(_targetType, _quantityType));
 
         selectionRequest.onComplete += OnTargetsSelected;
-        RequestAction(selectionRequest);
+        RequestProcess(selectionRequest);
     }
 
     private string GetSelectorDescription(CharacterType _targetType, TargetQuantityType _quantityType)
@@ -142,7 +155,7 @@ public class PlayCardAction : FlowAction
         return description;
     }
 
-    public void OnTargetsSelected(AbstractAction sender, object value, object parameter)
+    public void OnTargetsSelected(AbstractProcess sender, object value, object parameter)
     {
         //Debug.Log($"OnTargetsSelected: {value}");
 
