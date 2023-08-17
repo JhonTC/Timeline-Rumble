@@ -5,7 +5,6 @@ namespace Carp.Process
     public class GroupProcess : AbstractProcess
     {
         protected List<AbstractProcess> processQueue = new List<AbstractProcess>();
-        protected List<AbstractProcess> activeProcesses = new List<AbstractProcess>();
         public AbstractProcess waitingForProcessValue = null;
         protected bool isWaitingForProcess = false;
         public bool quitWhenQueueIsEmpty = true;
@@ -35,8 +34,6 @@ namespace Carp.Process
         {
             var actionRequest = processQueue[0];
             processQueue.RemoveAt(0);
-
-            activeProcesses.Add(actionRequest);
 
             if (actionRequest != null)
             {
@@ -72,12 +69,6 @@ namespace Carp.Process
 
         public void OnActionComplete(AbstractProcess sender, object value, object parameter)
         {
-            if (activeProcesses.Contains(sender))
-            {
-                activeProcesses.Remove(sender);
-                sender = null;
-            }
-
             if (quitWhenQueueIsEmpty && processQueue.Count <= 0)
             {
                 onComplete?.Invoke(this, null, null);

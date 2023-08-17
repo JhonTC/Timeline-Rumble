@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     private Dictionary<int, CardView> activeCardViews = new Dictionary<int, CardView>();
-    private Dictionary<int, CardView> handCardViews = new Dictionary<int, CardView>();
+    public Dictionary<int, CardView> handCardViews = new Dictionary<int, CardView>();
 
     public RectTransform cardDisplayParent;
     public RectTransform handDisplayParent;
@@ -51,7 +51,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void DisplayCard(Card _card, Player _player)
+    /*public void DisplayCard(Card _card, Player _player)
     {
         Vector3 position = Camera.main.WorldToScreenPoint(_player.character.gameObject.transform.position);
 
@@ -60,13 +60,8 @@ public class UIManager : MonoBehaviour
     public void DisplayCard(CardView _cardView, Player _player)
     {
         _cardView.container.SetActive(false);
-        DisplayCard(_cardView.card, _player, _cardView.transform.position, false);
+        DisplayCard(_cardView.card, _player, false, 0.5f, cardDisplayParent, _cardView.transform.position, false);
     }
-    public void DisplayCard(Card _card, Player _player, Vector3 _position, bool _animateOpen = true)
-    {
-        DisplayCard(_card, _player, false, 0.5f, cardDisplayParent, _position, _animateOpen);
-    }
-    
     public void DisplayCard(Card _card, Player _player, bool _isInHand, float _scaleRelativeToParent, RectTransform _parent, Vector3 _position, bool _animateOpen = true, Action<CardView> _onCardViewSelected = null)
     {
         Vector3 position = _position;
@@ -142,9 +137,9 @@ public class UIManager : MonoBehaviour
         {
             DisplayCard(_player.hand.cards[i], _player, true, 1, handDisplayParent, Vector3.zero, true, _onCardViewSelected);
         }
-    }
+    }*/
 
-    public void ClearHandCardViews()
+    /*public void ClearHandCardViews()
     {
         foreach (CardView cardView in handCardViews.Values)
         {
@@ -178,50 +173,8 @@ public class UIManager : MonoBehaviour
             });
             scaleTween.setEase(LeanTweenType.easeInOutSine);
         }
-    } 
+    } */
 }
 
 [Serializable]
 public class CharacterTypeColourPair : Pair<CharacterType, Color> {}
-
-[Serializable]
-public class PrefabStore : MonoBehaviour
-{
-    public static PrefabStore Instance;
-    private static Dictionary<Type, object> prefabs;
-
-    [SerializeField]
-    private CardView cardView;
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        } else
-        {
-            Destroy(this);
-        }
-
-        if (Instance == this)
-        {
-            prefabs = new Dictionary<Type, object>()
-            {
-                { typeof(CardView), cardView }
-            };
-        }
-    }
-
-    public static bool GetPrefabOfType<T>(out T value)
-    {
-        if (prefabs.ContainsKey(typeof(T)))
-        {
-            value = (T)prefabs[typeof(T)];
-            return true;
-        }
-
-        Debug.LogWarning($"No prefab exists of type {typeof(T)}");
-        value = default;
-        return false;
-    }
-}

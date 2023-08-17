@@ -35,7 +35,7 @@ public class CurvedHorizontalLayout : MonoBehaviour
         focusedContainer = focusedContainerObject.AddComponent<HorizontalLayoutFocusView>();
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (lastChildCount != transform.childCount)
         {
@@ -69,6 +69,8 @@ public class CurvedHorizontalLayout : MonoBehaviour
 
     public void RenderView()
     {
+        Debug.Log("RenderView: CurvedHorizontalLayout");
+
         focusedContainer.transform.SetAsLastSibling();
 
         float width = 0;
@@ -105,23 +107,24 @@ public class CurvedHorizontalLayout : MonoBehaviour
         }
 
         float difference = 0f;
-        float halfChildCount = (transform.childCount - 2) / 2f;
-        if (halfChildCount > 0)
+        float halfMaxChildCount = (maxChildCount - 1) / 2f;
+        if (halfMaxChildCount > 0)
         {
-            difference = archAngle / halfChildCount;
+            difference = archAngle / halfMaxChildCount;
         }
 
         float currentAngle = 0;
-        if (transform.childCount > 0)
+        float halfChildCount = (childTransforms.Length - 1) / 2f;
+        if (childTransforms.Length > 0)
         {
             currentAngle = -halfChildCount * difference;
         }
 
         for (int i = 0; i < childTransforms.Length; i++)
         {
-            childTransforms[i].Rotate(Vector3.forward, currentAngle);
+            childTransforms[i].rotation = Quaternion.Euler(Vector3.forward * currentAngle);
 
-            childTransforms[i].transform.localPosition += childTransforms[i].transform.up * -Mathf.Abs(currentAngle * 2f); ;
+            childTransforms[i].transform.localPosition += childTransforms[i].transform.up * -Mathf.Abs(currentAngle * (i - halfChildCount));
 
             currentAngle += difference;
         }

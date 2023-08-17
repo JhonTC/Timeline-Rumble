@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
     public Character character;
 
     public Deck deck;
-    public Hand hand;
 
     public bool isLocal;
 
@@ -66,15 +65,5 @@ public class Player : MonoBehaviour
         
 
         //destroy character
-    }
-
-    public PlayCardProcess PlayFirstCardInHand()
-    {
-        if (hand.cards.Count > 0)
-        {
-            return hand.PlayCard(hand.cards[0], this);
-        }
-
-        return null;
     }
 }

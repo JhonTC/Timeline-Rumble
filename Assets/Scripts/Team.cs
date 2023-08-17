@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
-public class Team : MonoBehaviour
+public class Team
 {
     public static Dictionary<ushort, Team> list = new Dictionary<ushort, Team>();
     public static ushort currentTeamId = 0;

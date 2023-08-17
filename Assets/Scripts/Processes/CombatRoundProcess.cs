@@ -3,19 +3,23 @@ using UnityEngine;
 
 public class CombatRoundProcess : GroupProcess
 {
+    Team[] teams;
+
     public CombatRoundProcess(Team[] _teams) : base(true)
     {
-        foreach (Team team in _teams)
-        {
-            foreach(Player player in team.players)
-            {
-                RequestProcess(new PlayerTurnProcess(player));
-            }
-        }
+        teams = _teams;
     }
 
     public override void InvokeProcess()
     {
         Debug.Log("Combat Round Started");
+
+        foreach (Team team in teams)
+        {
+            foreach (Player player in team.players)
+            {
+                RequestProcess(new PlayerTurnProcess(player));
+            }
+        }
     }
 }

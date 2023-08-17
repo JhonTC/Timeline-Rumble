@@ -3,20 +3,32 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayCardProcess : GroupProcess
 {
     public Card card;
-    public CardView cardView;
     public Player player;
+    private CardView cardView;
+    private DisplayCardProcess displayCardProcess;
+
+    public CardView existingCardView;
     private Dictionary<Effect, EffectTargetGroup> effectTargetGroups = new Dictionary<Effect, EffectTargetGroup>();
     List<GameEventTriggerConnection> connectedGameEvents = new List<GameEventTriggerConnection>();
 
-    public PlayCardProcess(CardView _cardView, Player _player) : base(false)
+    public Action<CardView> onCardViewCreated;
+
+    public bool playedFromHand;
+
+    public Vector3 discardPilePosition;
+    public bool useDiscardPilePosition;
+
+    public PlayCardProcess(CardView _existingCardView, Player _player, bool _playedFromHand = false) : base(false)
     {
-        card = _cardView.card;
+        card = _existingCardView.card;
         player = _player;
-        cardView = _cardView;
+        existingCardView = _existingCardView;
+        playedFromHand = _playedFromHand;
     }
 
     public PlayCardProcess(Card _card, Player _player) : base(false)
@@ -28,17 +40,32 @@ public class PlayCardProcess : GroupProcess
     public override void InvokeProcess()
     {
         Debug.Log($"Play Card: {card}");
-
-        if (cardView != null)
+        if (playedFromHand)
         {
-            UIManager.Instance.DisplayCard(cardView, player);
-        } 
+            player.deck.isPlayingCard = true;
+        }
+
+        player.character.ChangeManaByValue(-card.cost, 0);
+
+        if (existingCardView != null)
+        {
+            displayCardProcess = new DisplayCardProcess(existingCardView, player, UIManager.Instance.cardDisplayParent);
+            displayCardProcess.onCardViewCreated += OnCardViewCreated;
+            RequestProcess(displayCardProcess);
+        }
         else
         {
-            UIManager.Instance.DisplayCard(card, player);
+            displayCardProcess = new DisplayCardProcess(card, player, UIManager.Instance.cardDisplayParent);
+            displayCardProcess.onCardViewCreated += OnCardViewCreated;
+            RequestProcess(displayCardProcess);
         }
 
         AssignTargets();
+    }
+
+    private void OnCardViewCreated(CardView _cardView)
+    {
+        cardView = _cardView;
     }
 
     public void AssignTargets()
@@ -187,6 +214,11 @@ public class PlayCardProcess : GroupProcess
 
         if (AreAllTargetsAssigned())
         {
+            if (!player.character.activeCardProcesses.Contains(this))
+            {
+                player.character.activeCardProcesses.Add(this);
+            }
+
             ConnectRequiredGameEvents(out bool triggerWhenPlayed);
 
             if (triggerWhenPlayed)
@@ -194,9 +226,28 @@ public class PlayCardProcess : GroupProcess
                 ActivateCardEffectsWithTrigger(GameEventType.CardPlayed);
             }
 
-            //GameManager.instance.StartCoroutine(TriggerOnCompleteAfterDelay(4)); //FOR TESTING
-            UIManager.Instance.RemoveCardView(card);
+            //disable view
+            if (cardView != null)
+            {
+                if (useDiscardPilePosition)
+                {
+                    LeanTween.move(cardView.container, discardPilePosition, 0.4f).setEase(LeanTweenType.easeInOutSine);
+                }
+
+                LTDescr scaleTween = LeanTween.scale(cardView.container, Vector3.zero, 0.5f);
+                scaleTween.setOnComplete(() =>
+                {
+                    UnityEngine.Object.Destroy(cardView.gameObject);
+                    cardView = null;
+                });
+                scaleTween.setEase(LeanTweenType.easeInOutSine);
+            }
+
             onComplete?.Invoke(this, null, null);
+            if (playedFromHand)
+            {
+                player.deck.isPlayingCard = false;
+            }
         }
     }
 
@@ -305,14 +356,14 @@ public class PlayCardProcess : GroupProcess
             }
         }
 
-        /*for (int i = connectedGameEvents.Count - 1; i >= 0; i--)
+        if (effectTargetGroups.Count <= 0)
         {
-            if (connectedGameEvents[i].eventTriggerType == _trigger)
+            Debug.Log($"Card({card}) has no remaning effects, removing card from memory");
+            if (player.character.activeCardProcesses.Contains(this))
             {
-                connectedGameEvents[i].eventAction -= ActivateCardEffectsWithTrigger;
-                connectedGameEvents.Remove(connectedGameEvents[i]);
+                player.character.activeCardProcesses.Remove(this);
             }
-        }*/
+        }
     }
 
     public void Deactivate()
@@ -321,6 +372,12 @@ public class PlayCardProcess : GroupProcess
         {
             connectedGameEvents[i].eventAction -= ActivateCardEffectsWithTrigger;
         }
+
+        if (displayCardProcess != null)
+        {
+            displayCardProcess.onCardViewCreated -= OnCardViewCreated;
+        }
+
         connectedGameEvents.Clear();
         effectTargetGroups.Clear();
         card = null;

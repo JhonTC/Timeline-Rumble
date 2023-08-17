@@ -108,18 +108,32 @@ public class CardView : MonoBehaviour, IView, IPointerEnterHandler, IPointerExit
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (isInHand)
+        if (isInHand && !owner.deck.isPlayingCard)
         {
-            isHovering = false;
-
-            if (horizontalLayout != null)
+            if (card.cost <= owner.character.mana)
             {
-                horizontalLayout.SetFocusedTransform(null);
-                horizontalLayout.focusedContainer.OnPointerClick -= OnPointerClick;
-                horizontalLayout.focusedContainer.OnPointerExit -= OnPointerExit;
-            }
+                isHovering = false;
 
-            onCardViewSelected?.Invoke(this);
+                if (horizontalLayout != null)
+                {
+                    horizontalLayout.SetFocusedTransform(null);
+                    horizontalLayout.focusedContainer.OnPointerClick -= OnPointerClick;
+                    horizontalLayout.focusedContainer.OnPointerExit -= OnPointerExit;
+                }
+
+                onCardViewSelected?.Invoke(this);
+            }
+        }
+    }
+
+    public void OnPlayerManaChanged(int mana, int maxMana)
+    {
+        if (card.cost > mana)
+        {
+            costText.color = Color.red;
+        } else
+        {
+            costText.color = Color.white;
         }
     }
 }

@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public Action<GameEventType> OnRoundStart;
     public Action<GameEventType> OnTurnStart;
 
+    public PrebuiltDeck defaultDeck;
     public Player tempPlayer1;
     public Player tempPlayer2;
 
@@ -29,6 +30,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LeanTween.init();
+
         gameFlowHandler = new GroupProcess();
 
         Team[] teams = new Team[]
@@ -37,6 +40,9 @@ public class GameManager : MonoBehaviour
             new Team(tempPlayer2)
         };
 
+        tempPlayer1.deck.SetDeck(defaultDeck.cards);
+        tempPlayer2.deck.SetDeck(defaultDeck.cards);
+
         CombatLocationProcess locationProcess = new CombatLocationProcess(teams);
         gameFlowHandler.RequestProcess(locationProcess);
     }
@@ -44,6 +50,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gameFlowHandler.Update();
+        if (gameFlowHandler != null)
+        {
+            gameFlowHandler.Update();
+        }
     }
 }
